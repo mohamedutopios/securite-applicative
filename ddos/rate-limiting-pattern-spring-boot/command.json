@@ -1,0 +1,46 @@
+// http://localhost:9090/actuator/health
+
+
+{
+    "status": "UP",  // Indique que le statut global de l'application est "UP" (en fonctionnement).
+    "components": {
+        "discoveryComposite": {
+            "description": "Discovery Client not initialized",  // Description indiquant que le client de découverte n'est pas initialisé.
+            "status": "UNKNOWN",  // Le statut du composant de découverte est "UNKNOWN" (inconnu).
+            "components": {
+                "discoveryClient": {
+                    "description": "Discovery Client not initialized",  // Description indiquant que le client de découverte n'est pas initialisé.
+                    "status": "UNKNOWN"  // Le statut du client de découverte est "UNKNOWN" (inconnu).
+                }
+            }
+        },
+        "diskSpace": {
+            "status": "UP",  // Indique que le statut de l'espace disque est "UP" (en fonctionnement).
+            "details": {
+                "total": 510938574848,  // Taille totale de l'espace disque en octets.
+                "free": 256745975808,  // Espace disque libre en octets.
+                "threshold": 10485760,  // Seuil d'espace disque en dessous duquel une alerte peut être déclenchée, en octets.
+                "path": "C:\\Users\\mohamed\\Documents\\Formation\\cesi\\CDA\\cesi-securite-applicative\\ddos\\rate-limiting-pattern-spring-boot\\.",  // Chemin vers le répertoire surveillé.
+                "exists": true  // Indique si le chemin spécifié existe.
+            }
+        },
+        "ping": {
+            "status": "UP"  // Indique que le statut du composant de ping est "UP" (en fonctionnement).
+        },
+        "rateLimiters": {
+            "status": "UP",  // Indique que le statut des limiteurs de taux est "UP" (en fonctionnement).
+            "details": {
+                "payment-service": {
+                    "status": "UP",  // Indique que le statut du limiteur de taux pour le service de paiement est "UP" (en fonctionnement).
+                    "details": {
+                        "availablePermissions": 5,  // Nombre de permissions disponibles actuellement pour le service de paiement.
+                        "numberOfWaitingThreads": 0  // Nombre de threads en attente pour le service de paiement.
+                    }
+                }
+            }
+        },
+        "refreshScope": {
+            "status": "UP"  // Indique que le statut de la portée de rafraîchissement est "UP" (en fonctionnement).
+        }
+    }
+}
