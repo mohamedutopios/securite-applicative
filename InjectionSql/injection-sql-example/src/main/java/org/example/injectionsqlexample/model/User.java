@@ -8,7 +8,7 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "users")
+@Table(name = "person")
 public class User {
 
     @Id
@@ -16,7 +16,7 @@ public class User {
     private Long id;
 
     @NotEmpty(message = "Username is required")
-    @Size(min = 3, max = 20, message = "Username must be between 3 and 20 characters")
+    @Size(min = 3, max = 500, message = "Username must be between 3 and 20 characters")
     private String username;
 
     @NotEmpty(message = "Password is required")

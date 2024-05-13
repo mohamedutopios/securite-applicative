@@ -9,6 +9,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -30,6 +31,20 @@ public class UserController {
         return ResponseEntity.ok(newUser);
     }
 
+
+    @PostMapping("/signup")
+    public ResponseEntity<?> signup(@Valid @RequestBody User user, BindingResult result) {
+        if (result.hasErrors()) {
+            return ResponseEntity.badRequest().body(result.getAllErrors());
+        }
+
+        // VULNÉRABILITÉ : Requête SQL construite avec concaténation de chaînes
+        String sql = "INSERT INTO person (username, password) VALUES ('" + user.getUsername() + "', '" + user.getPassword() + "')";
+        jdbcTemplate.execute(sql);
+        return ResponseEntity.ok("User registered successfully");
+    }
+
+
     @PostMapping("/login")
     public ResponseEntity<?> loginUser(@RequestBody User loginRequest) {
         Optional<User> user = userService.findByUsername(loginRequest.getUsername());
@@ -41,9 +56,16 @@ public class UserController {
 
     @GetMapping("/signin")
     public ResponseEntity<?> deleteUser(@RequestParam String username) {
-        String sql = "DELETE FROM users WHERE username = '" + username + "'";
+        String sql = "DELETE FROM person WHERE username = '" + username + "'";
         jdbcTemplate.execute(sql);
         return ResponseEntity.ok("User deleted successfully");
+    }
+
+
+@GetMapping("/all")
+    public ResponseEntity<List<User>> getAllUsers() {
+        List<User> users = userService.findAllUsers();
+        return ResponseEntity.ok(users);
     }
 
 
