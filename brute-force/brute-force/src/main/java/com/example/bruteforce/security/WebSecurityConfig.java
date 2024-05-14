@@ -32,7 +32,7 @@ public class WebSecurityConfig {
         http
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
-                                .requestMatchers("/login", "/", "/user").permitAll() // Autorise l'accès à /user sans authentification
+                                .requestMatchers("/login", "/", "/user", "/admin/unlock/**").permitAll() // Autorise l'accès à /user sans authentification
                                 .anyRequest().authenticated()
                 )
                 .formLogin(formLogin ->

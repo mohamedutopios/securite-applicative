@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class LoginAttemptService {
@@ -22,11 +23,13 @@ public class LoginAttemptService {
     private UserRepository userRepository;
 
     public void loginSucceeded(String username) {
+        // Supprime toutes les tentatives de connexion échouées pour l'utilisateur après une connexion réussie
         loginAttemptRepository.deleteAll(loginAttemptRepository.findByUsernameAndTimestampAfter(username, LocalDateTime.now().minusMinutes(LOCK_TIME_DURATION)));
     }
 
     public void loginFailed(String username) {
         LocalDateTime now = LocalDateTime.now();
+        // Enregistre une nouvelle tentative de connexion échouée pour l'utilisateur
         loginAttemptRepository.save(new LoginAttempt(username, now));
 
         if (isBruteForceAttack(username)) {
@@ -38,16 +41,17 @@ public class LoginAttemptService {
 
     private boolean isBruteForceAttack(String username) {
         LocalDateTime lockTime = LocalDateTime.now().minusMinutes(LOCK_TIME_DURATION);
+        // Vérifie si l'utilisateur a dépassé le nombre maximum de tentatives de connexion
         return loginAttemptRepository.findByUsernameAndTimestampAfter(username, lockTime).size() >= MAX_ATTEMPTS;
     }
 
-    // Méthode pour récupérer le temps de verrouillage
     public LocalDateTime getLockTime(String username) {
+        // Trouve la dernière tentative de connexion pour l'utilisateur
         LoginAttempt attempt = loginAttemptRepository.findTopByUsernameOrderByTimestampDesc(username);
+        // Retourne le timestamp de cette tentative ou null si aucune tentative n'existe
         return attempt != null ? attempt.getTimestamp() : null;
     }
 
-    // Méthode pour déverrouiller le compte
     public void unlockAccount(String username) {
         User user = userRepository.findByUsername(username).orElseThrow();
         user.setAccountNonLocked(true);

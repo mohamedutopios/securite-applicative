@@ -16,17 +16,17 @@ public class LoginController {
 
     @GetMapping
     public String login(HttpServletRequest request, Model model) {
-        HttpSession session = request.getSession(false);
-        String errorMessage = null;
-        if (session != null) {
-            AuthenticationException ex = (AuthenticationException) session.getAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
-            if (ex instanceof LockedException) {
-                errorMessage = "Your account has been locked due to multiple failed login attempts.";
-            } else if (ex != null) {
-                errorMessage = "Invalid username or password.";
-            }
-        }
-        model.addAttribute("errorMessage", errorMessage);
+//        HttpSession session = request.getSession(false);
+//        String errorMessage = null;
+//        if (session != null) {
+//            AuthenticationException ex = (AuthenticationException) session.getAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
+//            if (ex instanceof LockedException) {
+//                errorMessage = "Your account has been locked due to multiple failed login attempts.";
+//            } else if (ex != null) {
+//                errorMessage = "Invalid username or password.";
+//            }
+//        }
+//        model.addAttribute("errorMessage", errorMessage);
         return "login";
     }
 }

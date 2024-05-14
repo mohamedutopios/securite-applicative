@@ -13,6 +13,8 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 
+
+
 @Component
 public class CustomAuthenticationProvider implements AuthenticationProvider {
 
@@ -24,6 +26,8 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    private static final int LOCK_TIME_DURATION = 1;
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
