@@ -11,6 +11,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
+
 @Component
 public class CustomAuthenticationProvider implements AuthenticationProvider {
 
@@ -32,7 +34,13 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
         // Vérifier si le compte est verrouillé
         if (!user.isAccountNonLocked()) {
-            throw new LockedException("Account is locked");
+            LocalDateTime lockTime = loginAttemptService.getLockTime(username);
+            if (lockTime != null && lockTime.plusMinutes(LOCK_TIME_DURATION).isBefore(LocalDateTime.now())) {
+                // Déverrouiller automatiquement le compte après la période de verrouillage
+                loginAttemptService.unlockAccount(username);
+            } else {
+                throw new LockedException("Account is locked");
+            }
         }
 
         if (passwordEncoder.matches(password, user.getPassword())) {
@@ -43,7 +51,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
             throw new BadCredentialsException("Invalid username or password");
         }
     }
-
+    
     @Override
     public boolean supports(Class<?> authentication) {
         return UsernamePasswordAuthenticationToken.class.isAssignableFrom(authentication);

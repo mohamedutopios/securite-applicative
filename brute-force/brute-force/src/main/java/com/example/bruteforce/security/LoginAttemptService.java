@@ -1,6 +1,5 @@
 package com.example.bruteforce.security;
 
-
 import com.example.bruteforce.model.LoginAttempt;
 import com.example.bruteforce.model.User;
 import com.example.bruteforce.repository.LoginAttemptRepository;
@@ -41,5 +40,17 @@ public class LoginAttemptService {
         LocalDateTime lockTime = LocalDateTime.now().minusMinutes(LOCK_TIME_DURATION);
         return loginAttemptRepository.findByUsernameAndTimestampAfter(username, lockTime).size() >= MAX_ATTEMPTS;
     }
-}
 
+    // Méthode pour récupérer le temps de verrouillage
+    public LocalDateTime getLockTime(String username) {
+        LoginAttempt attempt = loginAttemptRepository.findTopByUsernameOrderByTimestampDesc(username);
+        return attempt != null ? attempt.getTimestamp() : null;
+    }
+
+    // Méthode pour déverrouiller le compte
+    public void unlockAccount(String username) {
+        User user = userRepository.findByUsername(username).orElseThrow();
+        user.setAccountNonLocked(true);
+        userRepository.save(user);
+    }
+}

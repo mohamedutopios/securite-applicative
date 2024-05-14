@@ -25,6 +25,16 @@ public class UserService {
         userRepository.save(user);
     }
 
+    public boolean unlockUser(String username) {
+        User user = userRepository.findByUsername(username).orElse(null);
+        if (user != null) {
+            user.setAccountNonLocked(true);
+            userRepository.save(user);
+            return true;
+        }
+        return false;
+    }
+
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
